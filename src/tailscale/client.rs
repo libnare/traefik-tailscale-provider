@@ -17,7 +17,7 @@ use hyper_named_pipe::{NAMED_PIPE_SCHEME, NamedPipeConnector};
 #[derive(Debug)]
 pub enum TailscaleError {
     SocketConnection(String),
-    HttpRequest(reqwest::Error),
+    HttpRequest(String),
     JsonParse(serde_json::Error),
     ApiError(String),
 }
@@ -26,7 +26,7 @@ impl fmt::Display for TailscaleError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             TailscaleError::SocketConnection(msg) => write!(f, "Socket connection error: {}", msg),
-            TailscaleError::HttpRequest(err) => write!(f, "HTTP request error: {}", err),
+            TailscaleError::HttpRequest(msg) => write!(f, "HTTP request error: {}", msg),
             TailscaleError::JsonParse(err) => write!(f, "JSON parse error: {}", err),
             TailscaleError::ApiError(msg) => write!(f, "Tailscale API error: {}", msg),
         }
@@ -34,12 +34,6 @@ impl fmt::Display for TailscaleError {
 }
 
 impl Error for TailscaleError {}
-
-impl From<reqwest::Error> for TailscaleError {
-    fn from(err: reqwest::Error) -> Self {
-        TailscaleError::HttpRequest(err)
-    }
-}
 
 impl From<serde_json::Error> for TailscaleError {
     fn from(err: serde_json::Error) -> Self {
