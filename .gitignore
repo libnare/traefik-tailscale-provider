@@ -120,3 +120,8 @@ fabric.properties
 ### dotenv template
 .env
 
+### Nix template
+# Ignore build outputs from performing a nix-build or `nix build` command
+result
+result-*
+
